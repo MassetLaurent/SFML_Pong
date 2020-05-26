@@ -1,0 +1,9 @@
+﻿  PlayState.cpp
+c:\users\laurent\documents\01 - programmation\c++\projets\sfml_pong\sfml_pong\playstate.cpp(17): warning C4244: 'initialisation' : conversion de 'int' en 'float', perte possible de données
+c:\users\laurent\documents\01 - programmation\c++\projets\sfml_pong\sfml_pong\playstate.cpp(25): warning C4244: 'initialisation' : conversion de 'int' en 'float', perte possible de données
+c:\users\laurent\documents\01 - programmation\c++\projets\sfml_pong\sfml_pong\playstate.cpp(109): warning C4244: 'argument' : conversion de 'T' en 'float', perte possible de données
+          with
+          [
+              T=unsigned int
+          ]
+  SFML_Pong.vcxproj -> C:\Users\Laurent\Documents\01 - Programmation\C++\Projets\SFML_Pong\Debug\SFML_Pong.exe
