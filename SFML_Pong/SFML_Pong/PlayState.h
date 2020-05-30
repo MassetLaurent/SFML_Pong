@@ -5,6 +5,7 @@
 #include "State.h"
 #include "Racket.h"
 #include "Ball.h"
+#include "Ai.h"
 
 class PlayState : public State
 {
@@ -14,7 +15,7 @@ private:
 	sf::Font font;
 	sf::Text pongText;
 	sf::Text playerScoreText;
-	sf::Text aiScoreText;
+	sf::Text player2ScoreText;
 
 	sf::Texture backgroundTexture;
 	sf::Sprite backgroundSprite;
@@ -29,21 +30,24 @@ private:
 	sf::Sprite middelLine;
 
 	sf::Clock restartBall;
+
 	Racket player;
-	Racket ai;
+	Racket player2;
+	Ai ai;
 	Ball ball;
 
-	void updateBallDirection();
-	int score, aiScore;
+	int score, player2Score;
 	bool showHelp;
+	bool twoPlayers;
 
 public:
-	PlayState(GameDataRef _data);
+	PlayState(GameDataRef _data, bool _twoPlayers = false);
 	virtual ~PlayState();
 
 	void init();
 	void showInfos();
 	void updateScore();
+	void updateBallDirection();
 
 
 	void handleInput();

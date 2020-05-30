@@ -15,7 +15,8 @@ private:
 
 	sf::Font font;
 	sf::Text pongText;
-	sf::Text startText;
+	sf::Text onePlayerText;
+	sf::Text twoPlayerText;
 	sf::Text quitText;
 
 public:

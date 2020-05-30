@@ -1,7 +1,7 @@
+#include <time.h>
+
 #include "Ball.h"
 #include "Definitions.h"
-
-#include <iostream>
 
 //constrructor
 Ball::Ball()
@@ -14,33 +14,33 @@ Ball::~Ball()
 }
 
 
-
 //methodes
 void Ball::init()
 {
 	this->playing = false;
 
 	this->ball.setRadius(10.f);
-	this->ball.setFillColor(sf::Color(200,200,200));
-	this->ball.setPosition(398, 320);
+	this->ball.setFillColor(sf::Color::White);
+	this->ball.setPosition(398.f, 320.f);
 
 	//init ball directions
-	srand(time(0));
+	srand(static_cast<unsigned>(time(NULL)));
+
 	// direction X
 	int tempDirection = rand() % 80 + 20;
 
 	if (tempDirection % 2 == 0)
-		dir_x = tempDirection;
+		dir_x = (float)tempDirection;
 	else
-		dir_x = -tempDirection;
+		dir_x = -(float)tempDirection;
 
 	//direction Y
 	tempDirection = rand() % 100;
 
 	if (tempDirection % 2 == 0)
-		dir_y = tempDirection;
+		dir_y = (float)tempDirection;
 	else
-		dir_y = -tempDirection;
+		dir_y = -(float)tempDirection;
 }
 
 sf::FloatRect Ball::getGlobalBounds()
@@ -74,9 +74,9 @@ void Ball::update(const float _dt)
 			this->ball.getPosition().y + (dir_y * BALL_SPEED * _dt)
 		);
 
-		if (this->ball.getGlobalBounds().left > 400)
+		if (this->ball.getGlobalBounds().left > 400.f)
 			ball.setFillColor(sf::Color::Blue);
-		else if (this->ball.getGlobalBounds().width < 400)
+		else if (this->ball.getGlobalBounds().width < 400.f)
 			ball.setFillColor(sf::Color::Red);
 	}
 }

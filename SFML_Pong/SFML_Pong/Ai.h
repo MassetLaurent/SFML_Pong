@@ -1,20 +1,19 @@
-#ifndef RACKET
-#define RACKET
+#ifndef AI
+#define AI
 
 #include <SFML/Graphics.hpp>
 #include "Game.h"
 #include "State.h"
 
-class Racket
+class Ai
 {
 private:
 	sf::Texture racketTexture;
 	sf::Sprite racketSprite;
-	std::string playerType;
 
 public:
-	Racket();
-	virtual ~Racket();
+	Ai();
+	virtual ~Ai();
 
 	sf::FloatRect getGlobalBounds();
 
@@ -23,4 +22,4 @@ public:
 	void draw(sf::RenderWindow &_window);
 };
 
-#endif // !RACKET
+#endif // !AI

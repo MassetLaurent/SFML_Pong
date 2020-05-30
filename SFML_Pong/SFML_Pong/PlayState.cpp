@@ -4,36 +4,7 @@
 #include "MainMenuState.h"
 #include "PlayState.h"
 
-void PlayState::updateBallDirection()
-{
-	if (this->ball.getGlobalBounds().intersects(this->borderBottom.getGlobalBounds()) && this->ball.getBallDir().y > 0)
-		this->ball.setBallDirection(this->ball.getBallDir().x, -this->ball.getBallDir().y);
-
-	if (this->ball.getGlobalBounds().intersects(this->borderTop.getGlobalBounds()) && this->ball.getBallDir().y < 0)
-		this->ball.setBallDirection(this->ball.getBallDir().x, -this->ball.getBallDir().y);
-
-	if (this->ball.getGlobalBounds().intersects(this->player.getGlobalBounds()) && this->ball.getBallDir().x < 0)
-	{
-		float randAdd = rand() % 20 + 1;
-		this->ball.setBallDirection(-this->ball.getBallDir().x + randAdd, this->ball.getBallDir().y + randAdd / 2);
-	}
-
-	if (this->ball.getGlobalBounds().intersects(this->ai.getGlobalBounds()) && this->ball.getBallDir().x > 0)
-	{
-		float randAdd = rand() % 20 + 1;
-
-		float tempDirY(0.f);
-
-		if (ball.getBallDir().y > 0)
-			tempDirY = this->ball.getBallDir().y + randAdd;
-		else
-			tempDirY = this->ball.getBallDir().y - randAdd;
-
-		this->ball.setBallDirection(-this->ball.getBallDir().x - randAdd, tempDirY);
-	}
-}
-
-PlayState::PlayState(GameDataRef _data) : data(_data)
+PlayState::PlayState(GameDataRef _data, bool _twoPlayers) : data(_data), twoPlayers(_twoPlayers)
 {
 }
 
@@ -45,9 +16,14 @@ void PlayState::init()
 {
 	//Init variables
 	this->score = 0;
-	this->aiScore = 0;
+	this->player2Score = 0;
 	this->player.init("player");
-	this->ai.init("ai");
+
+	if (!twoPlayers)
+		this->ai.init("ai");
+	else
+		this->player2.init("player2");
+
 	this->showHelp = true;
 	   
 	//background
@@ -79,27 +55,27 @@ void PlayState::init()
 	this->pongText.setString("PONG");
 	this->pongText.setCharacterSize(90);
 	this->pongText.setStyle(sf::Text::Bold | sf::Text::Underlined);
-	this->pongText.setFillColor(sf::Color(0, 0, 0, 255));
+	this->pongText.setFillColor(sf::Color::White);
 	this->pongText.setPosition(
 		(this->data->window.getSize().x / 2) - this->pongText.getGlobalBounds().width / 2
 		, -30.f);
 
 			//player score
 	this->playerScoreText.setFont(font);
-	this->playerScoreText.setString("Player : 0");
+	this->playerScoreText.setString("1P : 0");
 	this->playerScoreText.setCharacterSize(40);
 	this->playerScoreText.setStyle(sf::Text::Bold);
-	this->playerScoreText.setFillColor(sf::Color(0, 0, 0, 255));
+	this->playerScoreText.setFillColor(sf::Color::White);
 	this->playerScoreText.setPosition(10.f, 15.f);
 
 			//Ai score
-	this->aiScoreText.setFont(font);
-	this->aiScoreText.setString("0 : Ai");
-	this->aiScoreText.setCharacterSize(40);
-	this->aiScoreText.setStyle(sf::Text::Bold);
-	this->aiScoreText.setFillColor(sf::Color(0, 0, 0, 255));
-	this->aiScoreText.setPosition(
-		(this->data->window.getSize().x) - (this->aiScoreText.getGlobalBounds().width) - 20
+	this->player2ScoreText.setFont(font);
+	this->player2ScoreText.setString("0 : 2P");
+	this->player2ScoreText.setCharacterSize(40);
+	this->player2ScoreText.setStyle(sf::Text::Bold);
+	this->player2ScoreText.setFillColor(sf::Color::White);
+	this->player2ScoreText.setPosition(
+		(this->data->window.getSize().x) - (this->player2ScoreText.getGlobalBounds().width) - 20
 		, 15.f);
 }
 
@@ -127,22 +103,66 @@ void PlayState::updateScore()
 	if (this->ball.getGlobalBounds().left < -10)
 	{
 		this->ball.setPlaying(false);
-		this->aiScore++;
+		this->player2Score++;
 		restartBall.restart();
 		this->ball.init();
 	}
 
 	std::stringstream ss;
 
-	ss << "Player : " << score;
+	ss << "1P : " << score;
 
 	this->playerScoreText.setString(ss.str());
 
 	ss.str("");
 
-	ss << aiScore << " : Ai";
+	ss << player2Score << " : 2P";
 
-	this->aiScoreText.setString(ss.str());
+	this->player2ScoreText.setString(ss.str());
+}
+
+void PlayState::updateBallDirection()
+{
+	//ball hit the player racket
+	if (this->ball.getGlobalBounds().intersects(this->borderBottom.getGlobalBounds()) && this->ball.getBallDir().y > 0)
+		this->ball.setBallDirection(this->ball.getBallDir().x, -this->ball.getBallDir().y);
+
+	if (this->ball.getGlobalBounds().intersects(this->borderTop.getGlobalBounds()) && this->ball.getBallDir().y < 0)
+		this->ball.setBallDirection(this->ball.getBallDir().x, -this->ball.getBallDir().y);
+
+	if (this->ball.getGlobalBounds().intersects(this->player.getGlobalBounds()) && this->ball.getBallDir().x < 0)
+	{
+		float randAdd = rand() % 20 + 1;
+		this->ball.setBallDirection(-this->ball.getBallDir().x + randAdd, this->ball.getBallDir().y + randAdd / 2);
+	}
+	
+	//ball hit the player2 racket
+	if (this->ball.getGlobalBounds().intersects(this->player2.getGlobalBounds()) && this->ball.getBallDir().x > 0)
+	{
+		float randAdd = rand() % 20 + 1;
+		float tempDirY(0.f);
+
+		if (ball.getBallDir().y > 0)
+			tempDirY = this->ball.getBallDir().y + randAdd;
+		else
+			tempDirY = this->ball.getBallDir().y - randAdd;
+
+		this->ball.setBallDirection(-this->ball.getBallDir().x - randAdd, tempDirY);
+	}
+
+	//ball hit the AI racket
+	if (this->ball.getGlobalBounds().intersects(this->ai.getGlobalBounds()) && this->ball.getBallDir().x > 0)
+	{
+		float randAdd = rand() % 20 + 1;
+		float tempDirY(0.f);
+
+		if (ball.getBallDir().y > 0)
+			tempDirY = this->ball.getBallDir().y + randAdd;
+		else
+			tempDirY = this->ball.getBallDir().y - randAdd;
+
+		this->ball.setBallDirection(-this->ball.getBallDir().x - randAdd, tempDirY);
+	}
 }
 
 void PlayState::handleInput()
@@ -166,14 +186,17 @@ void PlayState::handleInput()
 		}
 	}
 
+	//player movements
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
 		this->player.updatePosition(-1);
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		this->player.updatePosition(1);
+
+	//player2 movements
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		this->ai.updatePosition(-1);
+		this->player2.updatePosition(-1);
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		this->ai.updatePosition(1);
+		this->player2.updatePosition(1);
 }
 
 void PlayState::update(const float & _dt)
@@ -190,25 +213,36 @@ void PlayState::update(const float & _dt)
 
 void PlayState::render(const float & dt)
 {
-	this->data->window.clear(sf::Color(220,220,220));
+	// --------- clear frame -------
+	this->data->window.clear();
 
-	//draw player, ball et Ai
-	this->data->window.draw(backgroundSprite);
+	// --------- draw -------
+	//gui
 	this->data->window.draw(pongText);
 	this->data->window.draw(playerScoreText);
-	this->data->window.draw(aiScoreText);
+	this->data->window.draw(player2ScoreText);
 
+	//background
+	this->data->window.draw(backgroundSprite);
 	this->data->window.draw(borderTop);
 	this->data->window.draw(middelLine);
 	this->data->window.draw(borderBottom);
 
-
+	//players or ai
 	this->player.draw(this->data->window);
-	this->ai.draw(this->data->window);
+
+	if (!twoPlayers)
+		this->ai.draw(this->data->window);
+	else
+		this->player2.draw(this->data->window);
+
 	this->ball.draw(this->data->window);
 
+	//help text
 	if(showHelp)
 		this->data->window.draw(infosSprite);
 
+
+	// --------- display -------
 	this->data->window.display();
 }

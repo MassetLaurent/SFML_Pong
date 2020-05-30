@@ -76,8 +76,5 @@ void Game::render()
 {
 	this->data->window.clear(sf::Color(255, 255, 255, 255));
 
-	//draw
-	//this->ui.draw();
-
 	this->data->window.display();
 }
