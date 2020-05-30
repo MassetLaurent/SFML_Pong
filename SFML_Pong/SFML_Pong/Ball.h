@@ -22,7 +22,7 @@ public:
 	void setBallDirection(float _dir_x, float _dir_y);
 	void setPlaying(bool _value);
 
-	void update();
+	void update(const float _dt);
 	void draw(sf::RenderWindow &_window);
 };
 

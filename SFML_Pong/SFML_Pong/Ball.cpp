@@ -27,21 +27,20 @@ void Ball::init()
 	//init ball directions
 	srand(time(0));
 	// direction X
-	int tempDirection = rand() % 100;
+	int tempDirection = rand() % 80 + 20;
 
 	if (tempDirection % 2 == 0)
-		dir_x = 1;
+		dir_x = tempDirection;
 	else
-		dir_x = -1;
+		dir_x = -tempDirection;
 
 	//direction Y
 	tempDirection = rand() % 100;
 
 	if (tempDirection % 2 == 0)
-		dir_y = 1;
+		dir_y = tempDirection;
 	else
-		dir_y = -1;
-		//dir_y = (float)-tempDirection / 50;
+		dir_y = -tempDirection;
 }
 
 sf::FloatRect Ball::getGlobalBounds()
@@ -66,13 +65,13 @@ void Ball::setPlaying(bool _value)
 	this->playing = _value;
 }
 
-void Ball::update()
+void Ball::update(const float _dt)
 {
 	if (this->playing)
 	{
 		this->ball.setPosition(
-			this->ball.getPosition().x + (dir_x * BALL_SPEED),
-			this->ball.getPosition().y + (dir_y * BALL_SPEED)
+			this->ball.getPosition().x + (dir_x * BALL_SPEED * _dt),
+			this->ball.getPosition().y + (dir_y * BALL_SPEED * _dt)
 		);
 
 		if (this->ball.getGlobalBounds().left > 400)

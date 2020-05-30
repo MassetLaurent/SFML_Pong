@@ -14,18 +14,22 @@ void PlayState::updateBallDirection()
 
 	if (this->ball.getGlobalBounds().intersects(this->player.getGlobalBounds()) && this->ball.getBallDir().x < 0)
 	{
-		float randAdd = rand() % 10;
-		randAdd /= 20;
-		this->ball.setBallDirection(-this->ball.getBallDir().x + randAdd, this->ball.getBallDir().y);
-		std::cout << randAdd << std::endl;
+		float randAdd = rand() % 20 + 1;
+		this->ball.setBallDirection(-this->ball.getBallDir().x + randAdd, this->ball.getBallDir().y + randAdd / 2);
 	}
 
 	if (this->ball.getGlobalBounds().intersects(this->ai.getGlobalBounds()) && this->ball.getBallDir().x > 0)
 	{
-		float randAdd = rand() % 10;
-		randAdd /= 20;
-		this->ball.setBallDirection(-this->ball.getBallDir().x - randAdd, this->ball.getBallDir().y);
-		std::cout << randAdd << std::endl;
+		float randAdd = rand() % 20 + 1;
+
+		float tempDirY(0.f);
+
+		if (ball.getBallDir().y > 0)
+			tempDirY = this->ball.getBallDir().y + randAdd;
+		else
+			tempDirY = this->ball.getBallDir().y - randAdd;
+
+		this->ball.setBallDirection(-this->ball.getBallDir().x - randAdd, tempDirY);
 	}
 }
 
@@ -177,7 +181,7 @@ void PlayState::update(const float & _dt)
 	if (showHelp)
 		this->showInfos();
 
-	ball.update();
+	ball.update(_dt);
 
 	this->updateScore();
 
