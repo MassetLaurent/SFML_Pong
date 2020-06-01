@@ -10,6 +10,7 @@ private:
 
 	bool playing;
 	float dir_x, dir_y;
+	int speed;
 
 public:
 	Ball();
@@ -19,6 +20,7 @@ public:
 
 	sf::FloatRect getGlobalBounds();
 	sf::Vector2f getBallDir();
+	float getSpeed();
 	void setBallDirection(float _dir_x, float _dir_y);
 	void setPlaying(bool _value);
 

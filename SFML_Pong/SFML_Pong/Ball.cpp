@@ -1,4 +1,5 @@
 #include <time.h>
+#include <iostream>
 
 #include "Ball.h"
 #include "Definitions.h"
@@ -41,6 +42,8 @@ void Ball::init()
 		dir_y = (float)tempDirection;
 	else
 		dir_y = -(float)tempDirection;
+
+	this->speed = 0;
 }
 
 sf::FloatRect Ball::getGlobalBounds()
@@ -54,10 +57,19 @@ sf::Vector2f Ball::getBallDir()
 	return tempDirection;
 }
 
+float Ball::getSpeed()
+{
+	return this->speed;
+}
+
 void Ball::setBallDirection(float _dir_x, float _dir_y)
 {
 	this->dir_x = _dir_x;
 	this->dir_y = _dir_y;
+
+	this->speed = static_cast<unsigned>(this->dir_x);
+	if (this->speed < 0)
+		this->speed = speed * -1;
 }
 
 void Ball::setPlaying(bool _value)

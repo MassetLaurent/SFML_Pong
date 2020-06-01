@@ -24,21 +24,18 @@ void Ai::init(std::string _playerType)
 	this->racketSprite.scale(sf::Vector2f(0.68f, 0.68f));
 }
 
-void Ai::updatePosition(int _dir_y)
+void Ai::updatePosition(Ball& _ball, sf::RenderWindow& _window)
 {
-	//-------------------mettre en place la logique de déplacement de l'IA-----------
-
-
-	/*	
-	this->racketSprite.setPosition(
-		this->racketSprite.getPosition().x,
-		this->racketSprite.getPosition().y + (_dir_y * MOVEMENT_SPEED));
-
-	if (this->racketSprite.getPosition().y < 120)
-		this->racketSprite.setPosition(this->racketSprite.getPosition().x, 120);
-	else if (this->racketSprite.getPosition().y > 480)
-		this->racketSprite.setPosition(this->racketSprite.getPosition().x, 480);
-	*/
+	if (_ball.getGlobalBounds().left > _window.getSize().x / 2)
+	{
+		if (_ball.getGlobalBounds().top > racketSprite.getGlobalBounds().top)
+			racketSprite.setPosition(racketSprite.getPosition().x, racketSprite.getPosition().y +  MOVEMENT_SPEED);
+		else
+			racketSprite.setPosition(racketSprite.getPosition().x, racketSprite.getPosition().y - MOVEMENT_SPEED);
+		
+		if (racketSprite.getGlobalBounds().top >= _window.getSize().y - racketSprite.getGlobalBounds().height - 17)
+			racketSprite.setPosition(racketSprite.getPosition().x, _window.getSize().y - racketSprite.getGlobalBounds().height - 18);
+	}
 }
 
 void Ai::draw(sf::RenderWindow &_window)

@@ -77,6 +77,16 @@ void PlayState::init()
 	this->player2ScoreText.setPosition(
 		(this->data->window.getSize().x) - (this->player2ScoreText.getGlobalBounds().width) - 20
 		, 15.f);
+
+		//ball speed
+	this->ballSpeedText.setFont(font);
+	this->ballSpeedText.setString("Ball Speed : ");
+	this->ballSpeedText.setCharacterSize(30);
+	this->ballSpeedText.setStyle(sf::Text::Bold);
+	this->ballSpeedText.setFillColor(sf::Color::White);
+	this->ballSpeedText.setPosition(
+		this->data->window.getSize().x / 2 - this->ballSpeedText.getGlobalBounds().width /2
+		, this->pongText.getGlobalBounds().height + 20);
 }
 
 void PlayState::showInfos()
@@ -119,6 +129,12 @@ void PlayState::updateScore()
 	ss << player2Score << " : 2P";
 
 	this->player2ScoreText.setString(ss.str());
+
+	ss.str("");
+
+	ss << "Ball Speed : " << ball.getSpeed() ;
+
+	this->ballSpeedText.setString(ss.str());
 }
 
 void PlayState::updateBallDirection()
@@ -193,10 +209,13 @@ void PlayState::handleInput()
 		this->player.updatePosition(1);
 
 	//player2 movements
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		this->player2.updatePosition(-1);
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		this->player2.updatePosition(1);
+	if (twoPlayers)
+	{
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			this->player2.updatePosition(-1);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			this->player2.updatePosition(1);
+	}
 }
 
 void PlayState::update(const float & _dt)
@@ -207,6 +226,9 @@ void PlayState::update(const float & _dt)
 	ball.update(_dt);
 
 	this->updateScore();
+
+	if (!twoPlayers)
+		ai.updatePosition(this->ball, this->data->window);
 
 	this->updateBallDirection();
 }
@@ -221,6 +243,7 @@ void PlayState::render(const float & dt)
 	this->data->window.draw(pongText);
 	this->data->window.draw(playerScoreText);
 	this->data->window.draw(player2ScoreText);
+	this->data->window.draw(ballSpeedText);
 
 	//background
 	this->data->window.draw(backgroundSprite);
